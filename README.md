@@ -1,8 +1,16 @@
 circos-arrayQC
 ==============
 
-This project is for making standard quality test for microarray data available.
-Please install R, Bioconductor, Perl and circos in advance for using the introduced method here.
+This project is for making standard quality tests for microarray data available.
+
+Please install:
+
+R -> http://www.r-project.org/
+Bioconductor -> http://www.bioconductor.org/
+Perl -> http://www.perl.org/
+circos -> http://circos.ca/
+
+in advance for using the introduced method here.
 First download both files and follow the instructions in file "performQualityAnalysis.R", 
 -> i.e. paste each line in an R command prompt.
 The results is a demo of the circos quality plot´s presented in:
