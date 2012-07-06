@@ -11,7 +11,7 @@ Perl -> http://www.perl.org/
 circos -> http://circos.ca/
 
 in advance for using the introduced method here.
-First download both files and follow the instructions in file "performQualityAnalysis.R", 
+Then download both files (folder: circos-arrayQC) and follow the instructions in file "performQualityAnalysis.R", 
 -> i.e. paste each line in an R command prompt.
 The results is a demo of the circos quality plot´s presented in:
 
