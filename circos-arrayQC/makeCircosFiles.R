@@ -1,99 +1,85 @@
 
-writeCircosWindowsConfig <- function(path, name){
+#/**
+#* Copyright (C) [2012] [martin koch] This program is free software; you can
+#* redistribute it and/or modify it under the terms of the GNU General
+#* Public License as published by the Free Software Foundation; either
+#* version 3 of the License, or (at your option) any later version. This
+#* program is distributed in the hope that it will be useful, but WITHOUT
+#* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+#* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+#* more details. You should have received a copy of the GNU General Public
+#* License along with this program; if not, see
+#* <http://www.gnu.org/licenses/>.
+#**/
+
+
+
+writeCircosConfig <- function(path, name, sepp){
 
 	fName<- "circosQCconfig.txt"
 		sink(fName, append=TRUE)
-			cat(paste("<image>", paste("dir=", "", sep=path), paste("file=", name, sep=''), "png=yes", "svg=yes", "radius=1500p", "background=white", "24bit=yes", "auto_alpha_colors=yes", "auto_alpha_steps=5", "</image>", sep='\n'))
+			cat(paste("<image>", "<<include etc/image.conf>>",
+			paste("file*=", name, sep=''),
+			"angle_offset* = -88",
+			"</image>", sep='\n'))
 			cat('\n')
 			cat('\n')
-			cat(paste("show_pca=yes","show_degradation=yes", "show_outliers_general=yes","show_outliers_bio=yes","show_outliers_internal.a=yes","show_outliers_internal.b=yes",paste("karyotype=", paste(path, "Karyotype.txt", sep="\\")),"chromosomes_order_by_karyotype=yes","chromosomes_units=1000000","chromosomes_display_default=yes", sep='\n'))
+			cat(paste("show_pca=yes","show_degradation=yes","show_outliers_general=yes","show_outliers_bio=yes","show_outliers_internal.a=yes","show_outliers_internal.b=yes",paste("karyotype=", paste(path, "Karyotype.txt", sep=sepp)),"chromosomes_order_by_karyotype=yes","chromosomes_units=1","chromosomes_display_default=yes",sep='\n'))
 			cat('\n')
 			cat('\n')
-			cat(paste("<plots>", "<plot>", "show=conf(show_pca)", "type=scatter", paste("file=", paste(path, "PCA.txt", sep="\\")),"r0=0.9r", "r1=1.15r+10p", "fill_color=blue", "stroke_color=vdgrey", "stroke_thickness=1", "glyph=circle", "glyph_size=18", "background=transparent", "background_color=vvlgrey", "background_stroke_color=black", "background_stroke_thickness=1", "<rules>", "<rule>", "importance=100", "condition=eval( _ID_ eq 'A')", "fill_color=red", "stroke_color=black", "glyph_size=24", "</rule>","</rules>", "</plot>",sep='\n')) 
+			cat(paste("<plots>", "<plot>", "show=conf(show_pca)", "type=scatter", paste("file=", paste(path, "PCA.txt", sep=sepp)),
+			"r1=0.99r","r0=0.8r","min=-35","max=20", "fill_color=blue","stroke_color=vdgrey","stroke_thickness=1","glyph=circle", "glyph_size=18","<<include background.conf>>",
+			# "<axes>","color     = grey_a1","thickness = 1","<axis>","position = 0","color    = black_a1","</axis>","<axis>","spacing = 5","</axis>","</axes>",
+			"axis = yes","axis_color     = black_a1","axis_thickness = 1","axis_spacing   = 15",
+			"<rules>","<rule>", "condition = var(id) eq 'A'","fill_color=red", "stroke_color=black","glyph_size=24","</rule>","</rules>","</plot>",sep='\n')) 
 			cat('\n')
 			cat('\n')
-			cat(paste("<plot>","show = conf(show_outliers_general)", "type  = scatter", paste("file=", paste(path, "Outliers_General.txt", sep="\\")),"r0 = 0.54r", "r1 = 0.64r+10p","fill_color = red","stroke_color = black","stroke_thickness = 1","glyph = circle","glyph_size = 20", "background = transparent", "background_color = vvlgrey", "background_stroke_color = black", "background_stroke_thickness = 1", "</plot>", sep='\n'))
+			cat(paste("<plot>","show = conf(show_degradation)", "type = heatmap", paste("file=", paste(path, "RNAdegradation.txt", sep=sepp)),"r1 = 0.77r","r0 = 0.72r","stroke_thickness = 1", "stroke_color = grey_a3", "color = rdbu-11-div","<<include background.conf>>","</plot>", sep='\n'))
 			cat('\n')
 			cat('\n')
-			cat(paste("<plot>", "show = conf(show_outliers_bio)", "type  = scatter", paste("file=", paste(path, "Outliers_Bio.txt", sep="\\")),"r0 = 0.41r", "r1 = 0.51r+10p", "fill_color = blue", "stroke_color = black", "stroke_thickness = 1", "glyph = circle", "glyph_size = 20", "background = transparent", "background_color = vvlgrey", "background_stroke_color = black", "background_stroke_thickness = 1", "<rules>", "<rule>", "importance = 100", "condition  = eval( _ID_ eq 'A')", "fill_color = red", "stroke_color = black", "glyph_size = 22", "</rule>", "</rules>", "</plot>", sep='\n'))
+			cat(paste("<plot>","show = conf(show_outliers_general)", "type  = scatter", paste("file=", paste(path, "Outliers_General.txt", sep=sepp)),"r1 = 0.69r","r0 = 0.60r","fill_color = red","<<include outliers.glyphs.conf>>","<<include background.conf>>","</plot>", sep='\n'))
 			cat('\n')
 			cat('\n')
-			cat(paste("<plot>", "show = conf(show_outliers_internal.a)", "type  = scatter", paste("file=", paste(path, "Outliers_Internal.A.txt", sep="\\")),"r0 = 0.28r", "r1 = 0.38r+10p", "fill_color = red", "stroke_color = black", "stroke_thickness = 1", "glyph = circle", "glyph_size = 20", "background = transparent", "background_color = vvlgrey", "background_stroke_color = black", "background_stroke_thickness = 1", "</plot>"	, sep='\n'))
+			cat(paste("<plot>", "show = conf(show_outliers_bio)", "type  = scatter", paste("file=", paste(path, "Outliers_Bio.txt", sep=sepp)),"r1 = 0.59r", "r0 = 0.50r", "fill_color = blue", "<<include outliers.glyphs.conf>>", "<<include background.conf>>","<rules>", "<rule>",  "condition  = var(id) eq 'A'", "fill_color = red", "stroke_color = black", "glyph_size = 22", "</rule>", "</rules>", "</plot>", sep='\n'))
 			cat('\n')
 			cat('\n')
-			cat(paste("<plot>", "show = conf(show_outliers_internal.b)", "type  = scatter", paste("file=", paste(path, "Outliers_Internal.B.txt", sep="\\")),"r0 = 0.18r", "r1 = 0.25r+10p", "fill_color = red", "stroke_color = black", "stroke_thickness = 1", "glyph = circle", "glyph_size = 20", "background = transparent", "background_color = vvlgrey", "background_stroke_color = black", "background_stroke_thickness = 1", "</plot>", sep='\n'))
+			cat(paste("<plot>", "show = conf(show_outliers_internal.a)", "type  = scatter", paste("file=", paste(path, "Outliers_Internal.A.txt", sep=sepp)),"r1 = 0.49r", "r0 = 0.40r", "fill_color = red", "<<include outliers.glyphs.conf>>", "<<include background.conf>>","</plot>"	, sep='\n'))
 			cat('\n')
 			cat('\n')
-			cat(paste("<plot>","show = conf(show_degradation)", "type = heatmap", paste("file=", paste(path, "RNAdegradation.txt", sep="\\")),"r0 = 0.67r", "r1 = 0.87r+10p", "stroke_thickness = 1", "stroke_color = lgrey", "color = lred,vvlgrey,lblue", "</plot>", "</plots>", sep='\n'))
+			cat(paste("<plot>", "show = conf(show_outliers_internal.b)", "type  = scatter", paste("file=", paste(path, "Outliers_Internal.B.txt", sep=sepp)),"r1 = 0.39r", "r0 = 0.30r", "fill_color = red", "<<include outliers.glyphs.conf>>", "<<include background.conf>>", "</plot>", "</plots>", sep='\n'))
 			cat('\n')
 			cat('\n')
 			cat(paste("<<include ideogram.conf>>", "<<include ticks.conf>>", "<<include etc/colors_fonts_patterns.conf>>", "<<include etc/housekeeping.conf>>", sep='\n'))
 			cat('\n')
 		sink()
-		
-		fName<- "ideogram.conf"
-		sink(fName, append=TRUE)
-		  cat(paste("<ideogram>", "<spacing>", "default = 0.001r", "<pairwise hs100>", "spacing = 1r", "</pairwise>", "</spacing>", "thickness = 25p", "fill = yes", "fill_color = black", "radius = 0.80r", "label_parallel = no", "label_size = 21p", "show_label = yes", "label_font = default", "label_radius = dims(ideogram,radius) + 0.18r","show_bands = yes","fill_bands = yes", "band_stroke_thickness = 0","band_stroke_color = black","band_transparency = 4", "</ideogram>", sep='\n'))
-		sink()
-		
+	}
+	
+	
+    write.ticks <- function(){
 		fName<- "ticks.conf"
 		sink(fName, append=TRUE)
-		  cat(paste("show_ticks = yes","show_tick_labels = no","show_grid  = yes","<ticks>","tick_label_font  = light","radius = dims(ideogram,radius_outer) + 180p","label_offset     = 5p","label_size       = 16p","multiplier       = 1e-6","color     = black", "thickness = 1p",
-		  "<tick>","spacing = 25u","size = 12p","show_label     = yes","format  = %d","</tick>","<tick>","label_separation = 1p","spacing   = 5u","size      = 7p","show_label       = yes","format    = %d","</tick>","<tick>","chromosomes_display_default = no","chromosomes    = rn1;mm1","spacing = 5u","size    = 0p","force_display  = yes","grid_start     = 0.45r","grid_end       = dims(ideogram,radius_outer) + 180p","grid_color     = grey","grid_thickness = 1p","grid    = yes","</tick>",
-		  "<tick>","chromosomes    = -rn1;-mm1","radius  = 0.95r","spacing_type   = relative","rspacing       = 0.20","size    = 6p","show_label     = yes","label_relative = yes","rmultiplier    = 100","format  = %d","suffix  = %","skip_last_label= yes","grid_start     = 0.885r","grid_end       = 0.95r","grid_color     = grey","grid_thickness = 1p","grid    = yes","</tick>","<tick>","use = no","spacing_type   = relative","rspacing       = 0.999","size    = 6p","grid_start     = 0.45r","grid_end       = dims(ideogram,radius_outer) + 180p","grid_color     = grey","grid_thickness = 1p","grid    = yes",
-		  "</tick>","<tick>","chromosomes    = -rn1;-mm1","radius  = 0.95r","spacing_type   = relative","rspacing       = 0.10","size    = 3p","show_label     = no","grid_start     = 0.885r","grid_end       = 0.95r","grid_color     = lgrey","grid_thickness = 1p","grid    = yes","</tick>", "<tick>","chromosomes    = -rn1;-mm1","radius  = 0.82r","spacing_type   = relative","rspacing       = 0.25","size    = 6p","show_label     = yes","label_relative = yes","rmultiplier    = 100","format  = %d","skip_last_label= yes","grid_start     = 0.755r","grid_end       = 0.82r","grid_color     = grey","grid_thickness = 1p", "grid    = yes", "</tick>","</ticks>" , sep='\n'))
+		  cat(paste("show_ticks       = yes","show_tick_labels = yes","show_grid        = yes","<ticks>","radius           = 1r","color            = black","thickness        = 2p","format           = %d","grid_end       = 1r","grid_start     = 0.3r","<tick>","spacing        = 5u","size           = 5p","</tick>","<tick>","spacing        = 20u","size           = 12p","show_label     = yes","label_size     = 20p","label_offset   = 10p","format         = %d","grid = yes","grid_color = grey_a3","grid_thickness = 1p","</tick>","</ticks>", sep='\n'))
 		sink()
 	}
-
-    writeCircosUnixConfig <- function(path, name){
-
-	fName<- "circosQCconfig.txt"
+	
+    write.ideogram <- function(){
+	fName<- "ideogram.conf"
 		sink(fName, append=TRUE)
-			cat(paste("<image>", paste("dir=", "", sep=normalizePath(path)), paste("file=", name, sep=''), "png=yes", "svg=yes", "radius=1500p", "background=white", "24bit=yes", "auto_alpha_colors=yes", "auto_alpha_steps=5", "</image>", sep='\n'))
-			cat('\n')
-			cat('\n')
-			cat(paste("show_pca=yes","show_degradation=yes", "show_outliers_general=yes","show_outliers_bio=yes","show_outliers_internal.a=yes","show_outliers_internal.b=yes",paste("karyotype=", normalizePath(paste(path, "Karyotype.txt", sep="/"))),"chromosomes_order_by_karyotype=yes","chromosomes_units=1000000","chromosomes_display_default=yes", sep='\n'))
-			cat('\n')
-			cat('\n')
-			cat(paste("<plots>", "<plot>", "show=conf(show_pca)", "type=scatter", paste("file=", normalizePath(paste(path, "PCA.txt", sep="/"))),"r0=0.9r", "r1=1.15r+10p", "fill_color=blue", "stroke_color=vdgrey", "stroke_thickness=1", "glyph=circle", "glyph_size=18", "background=transparent", "background_color=vvlgrey", "background_stroke_color=black", "background_stroke_thickness=1", "<rules>", "<rule>", "importance=100", "condition=eval( _ID_ eq 'A')", "fill_color=red", "stroke_color=black", "glyph_size=24", "</rule>","</rules>", "</plot>",sep='\n')) 
-			cat('\n')
-			cat('\n')
-			cat(paste("<plot>","show = conf(show_outliers_general)", "type  = scatter", paste("file=", normalizePath(paste(path, "Outliers_General.txt", sep="/"))),"r0 = 0.54r", "r1 = 0.64r+10p","fill_color = red","stroke_color = black","stroke_thickness = 1","glyph = circle","glyph_size = 20", "background = transparent", "background_color = vvlgrey", "background_stroke_color = black", "background_stroke_thickness = 1", "</plot>", sep='\n'))
-			cat('\n')
-			cat('\n')
-			cat(paste("<plot>", "show = conf(show_outliers_bio)", "type  = scatter", paste("file=", normalizePath(paste(path, "Outliers_Bio.txt", sep="/"))),"r0 = 0.41r", "r1 = 0.51r+10p", "fill_color = blue", "stroke_color = black", "stroke_thickness = 1", "glyph = circle", "glyph_size = 20", "background = transparent", "background_color = vvlgrey", "background_stroke_color = black", "background_stroke_thickness = 1", "<rules>", "<rule>", "importance = 100", "condition  = eval( _ID_ eq 'A')", "fill_color = red", "stroke_color = black", "glyph_size = 22", "</rule>", "</rules>", "</plot>", sep='\n'))
-			cat('\n')
-			cat('\n')
-			cat(paste("<plot>", "show = conf(show_outliers_internal.a)", "type  = scatter", paste("file=", normalizePath(paste(path, "Outliers_Internal.A.txt", sep="/"))),"r0 = 0.28r", "r1 = 0.38r+10p", "fill_color = red", "stroke_color = black", "stroke_thickness = 1", "glyph = circle", "glyph_size = 20", "background = transparent", "background_color = vvlgrey", "background_stroke_color = black", "background_stroke_thickness = 1", "</plot>"	, sep='\n'))
-			cat('\n')
-			cat('\n')
-			cat(paste("<plot>", "show = conf(show_outliers_internal.b)", "type  = scatter", paste("file=", normalizePath(paste(path, "Outliers_Internal.B.txt", sep="/"))),"r0 = 0.18r", "r1 = 0.25r+10p", "fill_color = red", "stroke_color = black", "stroke_thickness = 1", "glyph = circle", "glyph_size = 20", "background = transparent", "background_color = vvlgrey", "background_stroke_color = black", "background_stroke_thickness = 1", "</plot>", sep='\n'))
-			cat('\n')
-			cat('\n')
-			cat(paste("<plot>","show = conf(show_degradation)", "type = heatmap", paste("file=", normalizePath(paste(path, "RNAdegradation.txt", sep="/"))),"r0 = 0.67r", "r1 = 0.87r+10p", "stroke_thickness = 1", "stroke_color = lgrey", "color = lred,vvlgrey,lblue", "</plot>", "</plots>", sep='\n'))
-			cat('\n')
-			cat('\n')
-			cat(paste("<<include ideogram.conf>>", "<<include ticks.conf>>", "<<include etc/colors_fonts_patterns.conf>>", "<<include etc/housekeeping.conf>>", sep='\n'))
-			cat('\n')
-		sink()
-		
-		fName<- "ideogram.conf"
-		sink(fName, append=TRUE)
-		  cat(paste("<ideogram>", "<spacing>", "default = 0.001r", "<pairwise hs100>", "spacing = 1r", "</pairwise>", "</spacing>", "thickness = 25p", "fill = yes", "fill_color = black", "radius = 0.80r", "label_parallel = no", "label_size = 21p", "show_label = yes", "label_font = default", "label_radius = dims(ideogram,radius) + 0.18r","show_bands = yes","fill_bands = yes", "band_stroke_thickness = 0","band_stroke_color = black","band_transparency = 4", "</ideogram>", sep='\n'))
-		sink()
-		
-		fName<- "ticks.conf"
-		sink(fName, append=TRUE)
-		  cat(paste("show_ticks = yes","show_tick_labels = no","show_grid  = yes","<ticks>","tick_label_font  = light","radius = dims(ideogram,radius_outer) + 180p","label_offset     = 5p","label_size       = 16p","multiplier       = 1e-6","color     = black", "thickness = 1p",
-		  "<tick>","spacing = 25u","size = 12p","show_label     = yes","format  = %d","</tick>","<tick>","label_separation = 1p","spacing   = 5u","size      = 7p","show_label       = yes","format    = %d","</tick>","<tick>","chromosomes_display_default = no","chromosomes    = rn1;mm1","spacing = 5u","size    = 0p","force_display  = yes","grid_start     = 0.45r","grid_end       = dims(ideogram,radius_outer) + 180p","grid_color     = grey","grid_thickness = 1p","grid    = yes","</tick>",
-		  "<tick>","chromosomes    = -rn1;-mm1","radius  = 0.95r","spacing_type   = relative","rspacing       = 0.20","size    = 6p","show_label     = yes","label_relative = yes","rmultiplier    = 100","format  = %d","suffix  = %","skip_last_label= yes","grid_start     = 0.885r","grid_end       = 0.95r","grid_color     = grey","grid_thickness = 1p","grid    = yes","</tick>","<tick>","use = no","spacing_type   = relative","rspacing       = 0.999","size    = 6p","grid_start     = 0.45r","grid_end       = dims(ideogram,radius_outer) + 180p","grid_color     = grey","grid_thickness = 1p","grid    = yes",
-		  "</tick>","<tick>","chromosomes    = -rn1;-mm1","radius  = 0.95r","spacing_type   = relative","rspacing       = 0.10","size    = 3p","show_label     = no","grid_start     = 0.885r","grid_end       = 0.95r","grid_color     = lgrey","grid_thickness = 1p","grid    = yes","</tick>", "<tick>","chromosomes    = -rn1;-mm1","radius  = 0.82r","spacing_type   = relative","rspacing       = 0.25","size    = 6p","show_label     = yes","label_relative = yes","rmultiplier    = 100","format  = %d","skip_last_label= yes","grid_start     = 0.755r","grid_end       = 0.82r","grid_color     = grey","grid_thickness = 1p", "grid    = yes", "</tick>","</ticks>" , sep='\n'))
+		  cat(paste("<ideogram>","<spacing>","default = 0.002r","<pairwise hs12 hs2>","spacing = 10r","</pairwise>","</spacing>","thickness = 1p","fill = yes","fill_color = black","radius = 0.90r","show_label = yes","label_parallel = yes","label_size = 36p","label_font = default","label_radius = dims(image,radius)-50p","show_bands = no","</ideogram>", sep='\n'))
 		sink()
 	}
-
-
-
-
+	 write.background <- function(){
+		fName<- "background.conf"
+		sink(fName, append=TRUE)
+		  cat(paste("background       = yes","background_color            = grey_a5","background_stroke_color     = grey_a3","background_stroke_thickness = 1", sep='\n'))
+		sink()
+	}
+	write.outliers.glyphs <- function(){
+		fName<- "outliers.glyphs.conf"
+		sink(fName, append=TRUE)
+		  cat(paste("stroke_color = black","stroke_thickness = 1","glyph = circle","glyph_size = 20", sep='\n'))
+		sink()
+	}
 
 writeHighlights <- function(cel, rown){
 
@@ -448,14 +434,18 @@ require.libs <- function(){
 	require(GEOquery)
 	require(affy)
 	require(pcaMethods)
+	require(genefilter)
+	require(IRanges)
 	require(yaqcaffy)
 	
 	library(Biobase)
 	library(GEOquery)
 	library(affy)
 	library(pcaMethods)
+	library(genefilter)
+	library(IRanges)
 	library(yaqcaffy)
-	
+	# source("http://www.bioconductor.org/biocLite.R")
 	
 }
 
@@ -473,7 +463,7 @@ writeCircos.files <- function(data, cel, workdir, fileName, pathToCircos ){
 
 
 	n_probes <- nrow(eset.norm)
-	noa <- c(1:(length(sampleNames(data))))	# number if arrays
+	noa <- c(1:(length(sampleNames(eset.norm))))	# number if arrays
 	nop <- c(1:200)	# number of probes
 
 	
@@ -505,12 +495,17 @@ writeCircos.files <- function(data, cel, workdir, fileName, pathToCircos ){
 	### Circos configuration files:
 	if(.Platform$OS.typ == "windows"){
 	  path <- get.path(workdir, pathToCircos)
-	  writeCircosWindowsConfig(path, fileName)
+	  writeCircosConfig(path, fileName, sepp="\\")
 	}
 	else{
 	path <- paste(workdir, "circosFiles", sep="/")
-	  writeCircosUnixConfig(path, fileName)
+	  writeCircosConfig(path, fileName, sepp="/")
 	}
+	
+	write.ticks()
+	write.ideogram()
+	write.background()
+	write.outliers.glyphs()
 	 
 	print("Circos files are generated! please go to circos home dir and execute:")
 	print("")
