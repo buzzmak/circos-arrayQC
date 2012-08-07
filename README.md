@@ -15,7 +15,8 @@ Then download both files (folder: circos-arrayQC) and follow the instructions in
 -> i.e. paste each line in an R command prompt.
 The results is a demo of the circos quality plot´s presented in:
 
-M.Koch and M. Wiese, in ... (tba)
+Martin Koch and Michael Wiese "Quality Visualization of Microarray Datasets Using Circos"
+Microarrays 2012, 1(2), 84-94; 
 
 Thanks for using this routine
 and please provide all usefull comments to:
