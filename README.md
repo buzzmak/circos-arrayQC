@@ -1,7 +1,7 @@
 circos-arrayQC
 ==============
 
-This project is for making standard quality tests for microarray data available.
+This project is for performing standard quality tests for microarray data.
 
 Please install:
 
